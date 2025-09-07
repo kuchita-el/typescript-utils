@@ -3,6 +3,21 @@
  */
 
 /**
+ * 恒等関数 - 引数をそのまま返す
+ * 
+ * @template T - 入力と出力の型
+ * @param value - 返す値
+ * @returns 入力された値をそのまま返す
+ * 
+ * @example
+ * const result = identity(42) // => 42
+ * const str = identity("hello") // => "hello"
+ */
+export function identity<T>(value: T): T {
+  return value
+}
+
+/**
  * 型推論を遅延した空のMapを作成する
  * 
  * この関数はTypeScriptの文脈的型付けを活用して、使用文脈に基づいて
