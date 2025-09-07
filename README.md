@@ -152,7 +152,7 @@ const statusCounts = data.reduce(
 
 ```typescript
 const options = {
-  duplicateStrategy: 'error' | 'overwrite' | 'ignore'
+  duplicateStrategy: 'first' | 'last'
 }
 const result = items.reduce(toMap(keyFn, valueFn, options), emptyMap())
 ```
@@ -217,12 +217,12 @@ src/
 このライブラリの最大の特徴は、TypeScriptの文脈的型付けを活用した完璧な型推論です：
 
 ```typescript
-// ❌ 型注釈が必要な従来の方法
-const counts: Map<string, number> = new Map()
-items.forEach((item) => {
+// ❌ 型注釈が必要な従来のreduce方法
+const counts: Map<string, number> = items.reduce((acc, item) => {
   const key = item.category
-  counts.set(key, (counts.get(key) || 0) + 1)
-})
+  acc.set(key, (acc.get(key) || 0) + 1)
+  return acc
+}, new Map<string, number>()) // 型引数が必要
 
 // ✅ 型注釈不要のライブラリ使用
 const counts = items.reduce(
