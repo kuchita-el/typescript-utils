@@ -1,5 +1,5 @@
 /**
- * Aggregation reducer utilities for Array.reduce()
+ * Array.reduce() 用の集約リデューサーユーティリティ
  */
 
 export type AggregatorFn<T, V> = (acc: V, item: T) => V
@@ -9,10 +9,10 @@ export type Aggregators<T, R extends Record<string, unknown>> = {
 }
 
 /**
- * Creates a reducer that aggregates multiple properties simultaneously
- * @param aggregators Object mapping property names to aggregator functions
- * @param initialValue Optional initial value for the aggregation
- * @returns Reducer function for Array.reduce()
+ * 複数のプロパティを同時に集約するリデューサーを作成する
+ * @param aggregators プロパティ名と集約関数のマッピングを行うObject
+ * @param initialValue 集約の初期値（オプション）
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
  * const transactions = [
@@ -43,11 +43,11 @@ export function aggregate<T, R extends Record<string, unknown>>(
 }
 
 /**
- * Creates a reducer that groups elements by key and applies aggregation to each group
- * @param keyFn Function to extract grouping key from each element
- * @param aggregatorFn Function to aggregate values within each group
- * @param initialValue Initial value for each group's aggregation
- * @returns Reducer function for Array.reduce()
+ * 要素をキーでグループ化し、各グループに集約を適用するリデューサーを作成する
+ * @param keyFn 各要素からグルーピングキーを抽出する関数
+ * @param aggregatorFn 各グループ内の値を集約する関数
+ * @param initialValue 各グループの集約の初期値
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
  * const sales = [

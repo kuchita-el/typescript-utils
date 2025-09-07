@@ -1,13 +1,11 @@
 /**
- * Counting reducer utilities for Array.reduce()
+ * Array.reduce() 用のカウントリデューサーユーティリティ
  */
 
-import { emptyMap } from '../collections'
-
 /**
- * Creates a reducer that counts elements grouped by key
- * @param keyFn Function to extract grouping key from each element
- * @returns Reducer function for Array.reduce()
+ * キーでグループ化した要素をカウントするリデューサーを作成する
+ * @param keyFn 各要素からグルーピングキーを抽出する関数
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
  * const items = [
@@ -28,21 +26,4 @@ export function countBy<T, K>(
     acc.set(key, current + 1)
     return acc
   }
-}
-
-/**
- * Helper function for better type inference with countBy
- * @param array The array to count elements from
- * @param keyFn Function to extract grouping key from each element  
- * @returns Map with counts by key
- * 
- * @example
- * const result = countByArray(users, u => u.category)
- * // Perfect type inference: Map<string, number>
- */
-export function countByArray<T, K>(
-  array: readonly T[],
-  keyFn: (item: T) => K
-): Map<K, number> {
-  return array.reduce(countBy(keyFn), emptyMap())
 }

@@ -1,16 +1,16 @@
 /**
- * Mathematical reducer utilities for Array.reduce()
+ * Array.reduce() 用の数学的リデューサーユーティリティ
  */
 
 /**
- * Types that support natural ordering comparison with < and > operators
+ * < と > 演算子で自然順序比較をサポートする型
  */
 type Comparable = number | string | Date | bigint
 
 /**
- * Creates a reducer that sums numeric values
- * @param transformFn Optional function to extract number from each element
- * @returns Reducer function for Array.reduce()
+ * 数値を合計するリデューサーを作成する
+ * @param transformFn 各要素から数値を抽出するオプション関数
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
  * [1, 2, 3].reduce(sum(), 0) // => 6
@@ -25,10 +25,10 @@ export function sum<T = number>(
 }
 
 /**
- * Creates a reducer that sums numeric values grouped by key
- * @param keyFn Function to extract grouping key from each element
- * @param valueFn Function to extract numeric value from each element
- * @returns Reducer function for Array.reduce()
+ * キーでグループ化した数値を合計するリデューサーを作成する
+ * @param keyFn 各要素からグルーピングキーを抽出する関数
+ * @param valueFn 各要素から数値を抽出する関数
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
  * const sales = [
@@ -54,28 +54,28 @@ export function sumBy<T, K>(
 
 
 /**
- * Creates a reducer that finds the minimum value
- * @param compareFn Optional comparison function (default: natural ordering for comparable types)
- * @returns Reducer function for Array.reduce()
+ * 最小値を見つけるリデューサーを作成する
+ * @param compareFn オプションの比較関数（デフォルト：比較可能型の自然順序）
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
- * [3, 1, 2].reduce(min()) // => 1 (no initial value needed)
- * [{ age: 25 }, { age: 30 }].reduce(min((a, b) => a.age - b.age)) // requires comparison function
+ * [3, 1, 2].reduce(min()) // => 1 (初期値不要)
+ * [{ age: 25 }, { age: 30 }].reduce(min((a, b) => a.age - b.age)) // 比較関数が必要
  */
-// Overload 1: Non-comparable types require compareFn
+// オーバーロード 1: 比較不可能型は compareFn が必要
 export function min<T>(
   compareFn: (a: T, b: T) => number
 ): (acc: T, item: T) => T
-// Overload 2: Comparable types can omit compareFn
+// オーバーロード 2: 比較可能型は compareFn を省略可能
 export function min<T extends Comparable>(
   compareFn?: (a: T, b: T) => number
 ): (acc: T, item: T) => T
-// Implementation
+// 実装
 export function min<T>(
   compareFn?: (a: T, b: T) => number
 ): (acc: T, item: T) => T {
   const compare = compareFn ?? ((a: T, b: T) => {
-    // This fallback only works for Comparable types
+    // このフォールバックはComparable型のみで機能する
     if ((a) < (b)) return -1
     if ((a) > (b)) return 1
     return 0
@@ -87,28 +87,28 @@ export function min<T>(
 }
 
 /**
- * Creates a reducer that finds the maximum value
- * @param compareFn Optional comparison function (default: natural ordering for comparable types)
- * @returns Reducer function for Array.reduce()
+ * 最大値を見つけるリデューサーを作成する
+ * @param compareFn オプションの比較関数（デフォルト：比較可能型の自然順序）
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
- * [3, 1, 2].reduce(max()) // => 3 (no initial value needed)
- * [{ age: 25 }, { age: 30 }].reduce(max((a, b) => a.age - b.age)) // requires comparison function
+ * [3, 1, 2].reduce(max()) // => 3 (初期値不要)
+ * [{ age: 25 }, { age: 30 }].reduce(max((a, b) => a.age - b.age)) // 比較関数が必要
  */
-// Overload 1: Non-comparable types require compareFn
+// オーバーロード 1: 比較不可能型は compareFn が必要
 export function max<T>(
   compareFn: (a: T, b: T) => number
 ): (acc: T, item: T) => T
-// Overload 2: Comparable types can omit compareFn
+// オーバーロード 2: 比較可能型は compareFn を省略可能
 export function max<T extends Comparable>(
   compareFn?: (a: T, b: T) => number
 ): (acc: T, item: T) => T
-// Implementation
+// 実装
 export function max<T>(
   compareFn?: (a: T, b: T) => number
 ): (acc: T, item: T) => T {
   const compare = compareFn ?? ((a: T, b: T) => {
-    // This fallback only works for Comparable types
+    // このフォールバックはComparable型のみで機能する
     if ((a) < (b)) return -1
     if ((a) > (b)) return 1
     return 0

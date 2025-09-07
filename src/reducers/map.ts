@@ -1,5 +1,5 @@
 /**
- * Map-related reducer utilities for Array.reduce()
+ * Array.reduce() 用のMap関連リデューサーユーティリティ
  */
 
 export type DuplicateStrategy = 'first' | 'last'
@@ -9,11 +9,11 @@ export interface ToMapOptions {
 }
 
 /**
- * Creates a reducer that converts array elements to a Map
- * @param keyFn Function to extract key from each element
- * @param valueFn Function to extract value from each element
- * @param options Options including duplicate handling strategy
- * @returns Reducer function for Array.reduce()
+ * 配列要素をMapに変換するリデューサーを作成する
+ * @param keyFn 各要素からキーを抽出する関数
+ * @param valueFn 各要素から値を抽出する関数
+ * @param options 重複処理戦略を含むオプション
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
  * const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]

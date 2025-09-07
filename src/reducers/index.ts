@@ -1,11 +1,11 @@
 /**
- * Array.reduce() utility functions
+ * Array.reduce() ユーティリティ関数
  * 
- * This module provides utility functions designed to be used with Array.reduce().
- * Each function returns a reducer function that provides perfect TypeScript type inference.
+ * このモジュールはArray.reduce()と一緒に使用するために設計されたユーティリティ関数を提供します。
+ * 各関数は完璧なTypeScript型推論を提供するリデューサー関数を返します。
  * 
  * @example
- * // Perfect type inference - no type annotations needed!
+ * // 完璧な型推論 - 型注釈不要！
  * const numbers = [1, 2, 3, 4, 5]
  * const total = numbers.reduce(sum(), 0) // => 15
  * 
@@ -16,7 +16,7 @@
  * const userRecord = users.reduce(toRecord(u => String(u.id), u => u.name), {})
  * // => { '1': 'Alice', '2': 'Bob' }
  * 
- * // Complex aggregations with perfect type inference
+ * // 完璧な型推論を伴う複雑な集約
  * const categoryTotals = items.reduce(sumBy(i => i.category, i => i.value), emptyMap())
  * const stats = data.reduce(aggregate({
  *   total: (acc, item) => acc + item.value,
@@ -25,20 +25,20 @@
  */
 
 
-// Map utilities
+// Map ユーティリティ
 export { toMap } from './map'
 export type { DuplicateStrategy, ToMapOptions } from './map'
 
-// Record utilities  
+// Record ユーティリティ
 export { toRecord } from './record'
 
-// Mathematical utilities
-export { sum, sumBy, average, getAverage, min, max } from './math'
+// 数学ユーティリティ
+export { sum, sumBy, min, max } from './math'
 
-// Aggregation utilities
+// 集約ユーティリティ
 export { aggregate, groupBy } from './aggregate'
 export type { AggregatorFn, Aggregators } from './aggregate'
 
-// Counting utilities
+// カウントユーティリティ
 export { countBy } from './count'
 

@@ -1,21 +1,21 @@
 /**
- * Collection utilities and identity elements
+ * コレクションユーティリティと単位元素
  */
 
 /**
- * Creates an empty Map with deferred type inference
+ * 型推論を遅延した空のMapを作成する
  * 
- * This function leverages TypeScript's contextual typing to infer the correct
- * Map types based on usage context, solving type inference issues with `new Map()`.
+ * この関数はTypeScriptの文脈的型付けを活用して、使用文脈に基づいて
+ * 正しいMap型を推論し、`new Map()`の型推論の問題を解決します。
  * 
- * @returns An empty Map with types inferred from context
+ * @returns 文脈から型が推論された空のMap
  * 
  * @example
- * // Type is correctly inferred as Map<string, number>
+ * // 型はMap<string, number>として正しく推論される
  * const counts = items.reduce(countBy(item => item.category), emptyMap())
  * 
  * @example
- * // Without emptyMap, this would be Map<any, any>
+ * // emptyMapを使わない場合、これはMap<any, any>になってしまう
  * const badCounts = items.reduce(countBy(item => item.category), new Map())
  */
 export function emptyMap<K, V>(): Map<K, V> {
@@ -23,15 +23,15 @@ export function emptyMap<K, V>(): Map<K, V> {
 }
 
 /**
- * Creates an empty Set with deferred type inference
+ * 型推論を遅延した空のSetを作成する
  * 
- * This function leverages TypeScript's contextual typing to infer the correct
- * Set type based on usage context, solving type inference issues with `new Set()`.
+ * この関数はTypeScriptの文脈的型付けを活用して、使用文脈に基づいて
+ * 正しいSet型を推論し、`new Set()`の型推論の問題を解決します。
  * 
- * @returns An empty Set with type inferred from context
+ * @returns 文脈から型が推論された空のSet
  * 
  * @example
- * // Type is correctly inferred as Set<string>
+ * // 型はSet<string>として正しく推論される
  * const uniqueItems = items.reduce(someSetReducer, emptySet())
  */
 export function emptySet<T>(): Set<T> {
@@ -39,15 +39,15 @@ export function emptySet<T>(): Set<T> {
 }
 
 /**
- * Creates an empty array with deferred type inference
+ * 型推論を遅延した空の配列を作成する
  * 
- * This function leverages TypeScript's contextual typing to infer the correct
- * array type based on usage context, solving type inference issues with `[]`.
+ * この関数はTypeScriptの文脈的型付けを活用して、使用文脈に基づいて
+ * 正しい配列型を推論し、`[]`の型推論の問題を解決します。
  * 
- * @returns An empty array with type inferred from context
+ * @returns 文脈から型が推論された空の配列
  * 
  * @example
- * // Type is correctly inferred as string[]
+ * // 型はstring[]として正しく推論される
  * const filtered = items.reduce(someFilterReducer, emptyArray())
  */
 export function emptyArray<T>(): T[] {

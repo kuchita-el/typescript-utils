@@ -17,8 +17,6 @@ describe('reducers module exports', () => {
   it('should export all math utilities', () => {
     expect(typeof reducers.sum).toBe('function')
     expect(typeof reducers.sumBy).toBe('function')
-    expect(typeof reducers.average).toBe('function')
-    expect(typeof reducers.getAverage).toBe('function')
     expect(typeof reducers.min).toBe('function')
     expect(typeof reducers.max).toBe('function')
   })

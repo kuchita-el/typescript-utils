@@ -1,13 +1,13 @@
 /**
- * Object-related reducer utilities for Array.reduce()
+ * Array.reduce() 用のObject関連リデューサーユーティリティ
  */
 
 
 /**
- * Creates a reducer that converts array elements to an Object
- * @param keyFn Function to extract key from each element (must return string)
- * @param valueFn Function to extract value from each element
- * @returns Reducer function for Array.reduce()
+ * 配列要素をObjectに変換するリデューサーを作成する
+ * @param keyFn 各要素からキーを抽出する関数（stringを返す必要あり）
+ * @param valueFn 各要素から値を抽出する関数
+ * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
  * const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]
