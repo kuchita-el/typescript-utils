@@ -1,24 +1,27 @@
 import eslint from '@eslint/js'
 import { defineConfig, globalIgnores } from 'eslint/config'
-import tseslint from 'typescript-eslint'
 import importPlugin from 'eslint-plugin-import'
-import nodePlugin from 'eslint-plugin-n'
+import { configs as tseslintConfigs } from 'typescript-eslint'
 
 export default defineConfig(
   globalIgnores(['dist/**', 'node_modules/**']),
   eslint.configs.recommended,
-  tseslint.configs.strictTypeChecked,
-  tseslint.configs.stylisticTypeChecked,
-  nodePlugin.configs['flat/recommended-module'],
+  tseslintConfigs.strictTypeChecked,
+  tseslintConfigs.stylisticTypeChecked,
   importPlugin.flatConfigs.recommended,
   importPlugin.flatConfigs.typescript,
   {
     languageOptions: {
       parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+        projectService: {
+          allowDefaultProject: ['*.js', '*.mjs']
+        },
+        tsconfigRootDir: import.meta.dirname,        
       }
     },
+  },
+  {
+    // importPlugin
     settings: {
       'import/resolver': {
         typescript: true,
@@ -26,7 +29,6 @@ export default defineConfig(
       }
     },
     rules: {
-      // Import order customization
       'import/order': ['error', {
         'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
         'newlines-between': 'always',

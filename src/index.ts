@@ -16,6 +16,12 @@ export type DeepReadonly<T> = {
 
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
+// Array.reduce() utilities
+export * from './reducers/index'
+
+// Collection utilities
+export * from './collections'
+
 // Export everything as default for convenience
 export default {
   identity

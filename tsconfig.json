@@ -3,10 +3,17 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "./dist",
+    
+    // Path Mapping
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "target": "esnext",
     // For nodejs:
     "lib": ["esnext"],
@@ -27,11 +34,12 @@
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "strict": true,
-    "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+
+    "incremental": true,
   },
   "include": [
     "src/**/*"
