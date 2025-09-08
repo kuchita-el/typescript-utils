@@ -3,8 +3,7 @@
  */
 import { describe, it, expect } from 'vitest'
 
-import { emptyMap } from '../../collections'
-import { sum, sumBy, min, max } from '../math'
+import { sum, min, max } from '../math'
 
 describe('sum', () => {
   it('should sum primitive numbers', () => {
@@ -41,40 +40,6 @@ describe('sum', () => {
   })
 })
 
-describe('sumBy', () => {
-  const sampleData = [
-    { id: 1, category: 'A', value: 100 },
-    { id: 2, category: 'B', value: 200 },
-    { id: 3, category: 'A', value: 150 }
-  ]
-
-  it('should sum by category with perfect type inference', () => {
-    const result = sampleData.reduce(sumBy(d => d.category, d => d.value), emptyMap())
-    
-    expect(result.get('A')).toBe(250)
-    expect(result.get('B')).toBe(200)
-    expect(result.size).toBe(2)
-  })
-
-  it('should handle single category', () => {
-    const data = [
-      { category: 'A', value: 100 },
-      { category: 'A', value: 200 }
-    ]
-    
-    const result = data.reduce(sumBy(d => d.category, d => d.value), emptyMap())
-    
-    expect(result.get('A')).toBe(300)
-    expect(result.size).toBe(1)
-  })
-
-  it('should handle empty arrays', () => {
-    const emptyArray: { category: string, value: number }[] = []
-    const result = emptyArray.reduce(sumBy((d) => d.category, (d) => d.value), emptyMap())
-    
-    expect(result.size).toBe(0)
-  })
-})
 
 
 describe('min', () => {

@@ -16,7 +16,6 @@ describe('reducers module exports', () => {
 
   it('should export all math utilities', () => {
     expect(typeof reducers.sum).toBe('function')
-    expect(typeof reducers.sumBy).toBe('function')
     expect(typeof reducers.min).toBe('function')
     expect(typeof reducers.max).toBe('function')
   })
@@ -27,7 +26,7 @@ describe('reducers module exports', () => {
   })
 
   it('should export all count utilities', () => {
-    expect(typeof reducers.countBy).toBe('function')
+    expect(typeof reducers.count).toBe('function')
   })
 
   it('should demonstrate complex chaining with multiple reducers', () => {
@@ -44,15 +43,23 @@ describe('reducers module exports', () => {
       new Map()
     )
 
-    // Count by role:action combination
+    // Count by role:action combination using groupBy + count
     const roleActionCounts = complexData.reduce(
-      reducers.countBy(item => `${item.user.role}:${item.action}`), 
+      reducers.groupBy(
+        item => `${item.user.role}:${item.action}`,
+        reducers.count(),
+        0
+      ),
       new Map()
     )
 
-    // Sum values by role
+    // Sum values by role using groupBy + sum combination
     const roleValues = complexData.reduce(
-      reducers.sumBy(item => item.user.role, item => item.value),
+      reducers.groupBy(
+        item => item.user.role,
+        reducers.sum((item: typeof complexData[number]) => item.value),
+        0
+      ),
       new Map()
     )
 
@@ -76,6 +83,6 @@ describe('reducers module exports', () => {
     expect(typeof mainExports.toMap).toBe('function')
     expect(typeof mainExports.sum).toBe('function')
     expect(typeof mainExports.aggregate).toBe('function')
-    expect(typeof mainExports.countBy).toBe('function')
+    expect(typeof mainExports.count).toBe('function')
   })
 })

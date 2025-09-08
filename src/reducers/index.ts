@@ -17,7 +17,7 @@
  * // => { '1': 'Alice', '2': 'Bob' }
  * 
  * // 完璧な型推論を伴う複雑な集約
- * const categoryTotals = items.reduce(sumBy(i => i.category, i => i.value), emptyMap())
+ * const categoryTotals = items.reduce(groupBy(i => i.category, sum(i => i.value), 0), emptyMap())
  * const stats = data.reduce(aggregate({
  *   total: (acc, item) => acc + item.value,
  *   count: (acc, _item) => acc + 1
@@ -33,12 +33,12 @@ export type { DuplicateStrategy, ToMapOptions } from './map'
 export { toRecord } from './record'
 
 // 数学ユーティリティ
-export { sum, sumBy, min, max } from './math'
+export { sum, min, max } from './math'
 
 // 集約ユーティリティ
 export { aggregate, groupBy } from './aggregate'
 export type { AggregatorFn, Aggregators } from './aggregate'
 
 // カウントユーティリティ
-export { countBy } from './count'
+export { count } from './count'
 

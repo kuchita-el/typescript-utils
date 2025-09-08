@@ -20,7 +20,14 @@ npm install typescript-utils
 ### 基本的な使用方法
 
 ```typescript
-import { sum, sumBy, toMap, emptyMap, aggregate } from 'typescript-utils'
+import {
+  sum,
+  groupBy,
+  toMap,
+  emptyMap,
+  aggregate,
+  count
+} from 'typescript-utils'
 
 // 数値の合計 - 型注釈不要！
 const numbers = [1, 2, 3, 4, 5]
@@ -33,9 +40,10 @@ const items = [
   { category: 'A', value: 15 }
 ]
 const categoryTotals = items.reduce(
-  sumBy(
+  groupBy(
     (item) => item.category,
-    (item) => item.value
+    sum((item) => item.value),
+    0
   ),
   emptyMap()
 )
@@ -76,7 +84,7 @@ const userRecord = users.reduce(
 ### 高度な集約
 
 ```typescript
-import { aggregate, groupBy, countBy, emptyMap } from 'typescript-utils'
+import { aggregate, groupBy, count, emptyMap } from 'typescript-utils'
 
 const data = [
   { category: 'A', value: 10, status: 'active' },
@@ -97,16 +105,17 @@ const stats = data.reduce(
 stats.average = stats.total / stats.count
 // => { total: 45, count: 3, average: 15 }
 
-// カテゴリ別のグループ化
-const grouped = data.reduce(
-  groupBy((item) => item.category),
+// カテゴリ別のグループ化（要素を配列にまとめる場合は別の関数が必要）
+// ここでは代わりにカテゴリ別カウントの例を示す
+const categoryCounts = data.reduce(
+  groupBy((item) => item.category, count(), 0),
   emptyMap()
 )
-// => Map<string, Item[]> { 'A' => [...], 'B' => [...] }
+// => Map<string, number> { 'A' => 2, 'B' => 1 }
 
 // ステータス別のカウント
 const statusCounts = data.reduce(
-  countBy((item) => item.status),
+  groupBy((item) => item.status, count(), 0),
   emptyMap()
 )
 // => Map<string, number> { 'active' => 2, 'inactive' => 1 }
@@ -119,9 +128,9 @@ const statusCounts = data.reduce(
 #### 数学演算
 
 - `sum()` - 数値の合計を計算するリデューサー
-- `sumBy(keyFn, valueFn)` - キー別の値の合計を計算
 - `min()` - 最小値を求めるリデューサー
 - `max()` - 最大値を求めるリデューサー
+- `count()` - 要素数をカウントするリデューサー
 
 #### 変換
 
@@ -131,8 +140,7 @@ const statusCounts = data.reduce(
 #### 集約
 
 - `aggregate(aggregators)` - 複数の集約を同時実行
-- `groupBy(keyFn)` - 要素をキー別にグループ化
-- `countBy(keyFn)` - キー別の出現回数をカウント
+- `groupBy(keyFn, aggregatorFn, initialValue)` - 要素をキー別にグループ化して集約
 
 ### コレクションヘルパー
 
@@ -226,7 +234,7 @@ const counts: Map<string, number> = items.reduce((acc, item) => {
 
 // ✅ 型注釈不要のライブラリ使用
 const counts = items.reduce(
-  countBy((item) => item.category),
+  groupBy((item) => item.category, count(), 0),
   emptyMap()
 )
 //    ^? Map<string, number> - 自動推論！

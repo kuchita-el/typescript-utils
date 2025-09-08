@@ -5,6 +5,8 @@ import { describe, it, expect } from 'vitest'
 
 import { emptyMap } from '../../collections'
 import { aggregate, groupBy } from '../aggregate'
+import { count } from '../count'
+import { sum } from '../math'
 
 describe('aggregate', () => {
   interface SampleData { id: number; name: string; category: string; value: number; }
@@ -160,5 +162,141 @@ describe('groupBy', () => {
     expect(result.get('admin:delete')).toBe(1)
     expect(result.get('user:view')).toBe(1)
     expect(result.size).toBe(3)
+  })
+
+  it('should work with groupBy + sum combination (replacing sumBy)', () => {
+    const sampleData = [
+      { id: 1, category: 'A', value: 100 },
+      { id: 2, category: 'B', value: 200 },
+      { id: 3, category: 'A', value: 150 }
+    ]
+    
+    const result = sampleData.reduce(groupBy(
+      item => item.category,
+      sum((item: typeof sampleData[number]) => item.value),
+      0
+    ), emptyMap())
+    
+    expect(result.get('A')).toBe(250)
+    expect(result.get('B')).toBe(200)
+    expect(result.size).toBe(2)
+  })
+
+  it('should handle single category with groupBy + sum', () => {
+    const data = [
+      { category: 'A', value: 100 },
+      { category: 'A', value: 200 }
+    ]
+    
+    const result = data.reduce(groupBy(
+      item => item.category,
+      sum((item: typeof data[number]) => item.value),
+      0
+    ), emptyMap())
+    
+    expect(result.get('A')).toBe(300)
+    expect(result.size).toBe(1)
+  })
+
+  it('should handle empty arrays with groupBy + sum', () => {
+    const emptyArray: { category: string, value: number }[] = []
+    const result = emptyArray.reduce(groupBy(
+      item => item.category,
+      sum((item: typeof emptyArray[number]) => item.value),
+      0
+    ), emptyMap())
+    
+    expect(result.size).toBe(0)
+  })
+
+  it('should work with groupBy + count combination (replacing countBy)', () => {
+    const sampleData = [
+      { id: 1, category: 'A' },
+      { id: 2, category: 'B' },
+      { id: 3, category: 'A' },
+      { id: 4, category: 'C' }
+    ]
+    
+    const result = sampleData.reduce(groupBy(
+      item => item.category,
+      count(),
+      0
+    ), emptyMap())
+    
+    expect(result.get('A')).toBe(2)
+    expect(result.get('B')).toBe(1)
+    expect(result.get('C')).toBe(1)
+    expect(result.size).toBe(3)
+  })
+
+  it('should work with groupBy + min combination for values', () => {
+    const sampleData = [
+      { id: 1, category: 'A', value: 100 },
+      { id: 2, category: 'B', value: 200 },
+      { id: 3, category: 'A', value: 50 },
+      { id: 4, category: 'B', value: 150 }
+    ]
+    
+    // Track minimum values by category
+    const result = sampleData.reduce(groupBy(
+      item => item.category,
+      (acc: number, item: typeof sampleData[number]) => Math.min(acc, item.value),
+      Infinity
+    ), emptyMap())
+    
+    expect(result.get('A')).toBe(50)
+    expect(result.get('B')).toBe(150)
+    expect(result.size).toBe(2)
+  })
+
+  it('should work with groupBy + max combination for values', () => {
+    const sampleData = [
+      { id: 1, category: 'A', value: 100 },
+      { id: 2, category: 'B', value: 200 },
+      { id: 3, category: 'A', value: 150 },
+      { id: 4, category: 'B', value: 50 }
+    ]
+    
+    // Track maximum values by category
+    const result = sampleData.reduce(groupBy(
+      item => item.category,
+      (acc: number, item: typeof sampleData[number]) => Math.max(acc, item.value),
+      -Infinity
+    ), emptyMap())
+    
+    expect(result.get('A')).toBe(150)
+    expect(result.get('B')).toBe(200)
+    expect(result.size).toBe(2)
+  })
+
+  it('should demonstrate type safety with AggregatorFn constraint', () => {
+    interface TestData {
+      category: string
+      value: number
+    }
+    
+    const testData: TestData[] = [
+      { category: 'X', value: 10 },
+      { category: 'Y', value: 20 },
+      { category: 'X', value: 30 }
+    ]
+    
+    // These should all work with proper type inference
+    const sumResult = testData.reduce(groupBy(
+      item => item.category,
+      sum((item: TestData) => item.value),
+      0
+    ), emptyMap())
+    
+    const countResult = testData.reduce(groupBy(
+      item => item.category,
+      count<TestData>(),
+      0
+    ), emptyMap())
+    
+    expect(sumResult.get('X')).toBe(40)
+    expect(sumResult.get('Y')).toBe(20)
+    expect(countResult.get('X')).toBe(2)
+    expect(countResult.get('Y')).toBe(1)
   })
 })

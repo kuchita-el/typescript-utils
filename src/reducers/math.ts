@@ -2,6 +2,8 @@
  * Array.reduce() 用の数学的リデューサーユーティリティ
  */
 
+import type { AggregatorFn } from './aggregate'
+
 /**
  * < と > 演算子で自然順序比較をサポートする型
  */
@@ -18,39 +20,12 @@ type Comparable = number | string | Date | bigint
  */
 export function sum<T = number>(
   transformFn?: (item: T) => number
-): (acc: number, item: T) => number {
+): AggregatorFn<T, number> {
   const fn = transformFn ?? ((item: T) => item as unknown as number)
   
   return (acc: number, item: T) => acc + fn(item)
 }
 
-/**
- * キーでグループ化した数値を合計するリデューサーを作成する
- * @param keyFn 各要素からグルーピングキーを抽出する関数
- * @param valueFn 各要素から数値を抽出する関数
- * @returns Array.reduce()用のリデューサー関数
- * 
- * @example
- * const sales = [
- *   { category: 'A', amount: 100 },
- *   { category: 'B', amount: 200 },
- *   { category: 'A', amount: 150 }
- * ]
- * const result = sales.reduce(sumBy(s => s.category, s => s.amount), emptyMap())
- * // Map { 'A' => 250, 'B' => 200 }
- */
-export function sumBy<T, K>(
-  keyFn: (item: T) => K,
-  valueFn: (item: T) => number
-): (acc: Map<K, number>, item: T) => Map<K, number> {
-  return (acc: Map<K, number>, item: T) => {
-    const key = keyFn(item)
-    const value = valueFn(item)
-    const current = acc.get(key) ?? 0
-    acc.set(key, current + value)
-    return acc
-  }
-}
 
 
 /**
@@ -65,15 +40,15 @@ export function sumBy<T, K>(
 // オーバーロード 1: 比較不可能型は compareFn が必要
 export function min<T>(
   compareFn: (a: T, b: T) => number
-): (acc: T, item: T) => T
+): AggregatorFn<T, T>
 // オーバーロード 2: 比較可能型は compareFn を省略可能
 export function min<T extends Comparable>(
   compareFn?: (a: T, b: T) => number
-): (acc: T, item: T) => T
+): AggregatorFn<T, T>
 // 実装
 export function min<T>(
   compareFn?: (a: T, b: T) => number
-): (acc: T, item: T) => T {
+): AggregatorFn<T, T> {
   const compare = compareFn ?? ((a: T, b: T) => {
     // このフォールバックはComparable型のみで機能する
     if ((a) < (b)) return -1
@@ -98,15 +73,15 @@ export function min<T>(
 // オーバーロード 1: 比較不可能型は compareFn が必要
 export function max<T>(
   compareFn: (a: T, b: T) => number
-): (acc: T, item: T) => T
+): AggregatorFn<T, T>
 // オーバーロード 2: 比較可能型は compareFn を省略可能
 export function max<T extends Comparable>(
   compareFn?: (a: T, b: T) => number
-): (acc: T, item: T) => T
+): AggregatorFn<T, T>
 // 実装
 export function max<T>(
   compareFn?: (a: T, b: T) => number
-): (acc: T, item: T) => T {
+): AggregatorFn<T, T> {
   const compare = compareFn ?? ((a: T, b: T) => {
     // このフォールバックはComparable型のみで機能する
     if ((a) < (b)) return -1

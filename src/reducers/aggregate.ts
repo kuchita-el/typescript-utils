@@ -71,7 +71,7 @@ export function aggregate<T, R extends Record<string, unknown>>(
  */
 export function groupBy<T, K, V>(
   keyFn: (item: T) => K,
-  aggregatorFn: (acc: V, item: T) => V,
+  aggregatorFn: AggregatorFn<T, V>,
   initialValue: V
 ): (acc: Map<K, V>, item: T) => Map<K, V> {
   return (acc: Map<K, V>, item: T) => {

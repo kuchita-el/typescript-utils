@@ -2,28 +2,30 @@
  * Array.reduce() 用のカウントリデューサーユーティリティ
  */
 
+import type { AggregatorFn } from './aggregate'
+
 /**
- * キーでグループ化した要素をカウントするリデューサーを作成する
- * @param keyFn 各要素からグルーピングキーを抽出する関数
+ * 要素をカウントするAggregatorFnを作成する
  * @returns Array.reduce()用のリデューサー関数
  * 
  * @example
- * const items = [
+ * const items = [1, 2, 3, 4, 5]
+ * const result = items.reduce(count(), 0)
+ * // => 5
+ * 
+ * // groupByと組み合わせて使用（countByの代替）
+ * import { groupBy } from './aggregate'
+ * import { emptyMap } from '../collections'
+ * 
+ * const categoryData = [
  *   { category: 'A' },
  *   { category: 'B' },
  *   { category: 'A' },
  *   { category: 'C' }
  * ]
- * const result = items.reduce(countBy(item => item.category), emptyMap())
+ * const result = categoryData.reduce(groupBy(item => item.category, count(), 0), emptyMap())
  * // Map { 'A' => 2, 'B' => 1, 'C' => 1 }
  */
-export function countBy<T, K>(
-  keyFn: (item: T) => K
-): (acc: Map<K, number>, item: T) => Map<K, number> {
-  return (acc: Map<K, number>, item: T): Map<K, number> => {
-    const key = keyFn(item)
-    const current = acc.get(key) ?? 0
-    acc.set(key, current + 1)
-    return acc
-  }
+export function count<T>(): AggregatorFn<T, number> {
+  return (acc: number) => acc + 1
 }
