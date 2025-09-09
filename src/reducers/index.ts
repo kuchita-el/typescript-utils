@@ -17,13 +17,15 @@
  * // => { '1': 'Alice', '2': 'Bob' }
  * 
  * // 完璧な型推論を伴う複雑な集約
- * const categoryTotals = items.reduce(groupBy(i => i.category, sum(i => i.value), 0), emptyMap())
+ * const categoryTotals = items.reduce(reduceBy(i => i.category, sum(i => i.value), 0), emptyMap())
  * const stats = data.reduce(aggregate({
  *   total: (acc, item) => acc + item.value,
  *   count: (acc, _item) => acc + 1
  * }), { total: 0, count: 0 })
  */
 
+// 型定義
+export type { ReducerFn } from './types'
 
 // Map ユーティリティ
 export { toMap } from './map'
@@ -32,13 +34,12 @@ export type { DuplicateStrategy, ToMapOptions } from './map'
 // Record ユーティリティ
 export { toRecord } from './record'
 
-// 数学ユーティリティ
-export { sum, min, max } from './math'
+// 算術演算ユーティリティ
+export { sum, min, max } from './arithmetic'
 
-// 集約ユーティリティ
-export { aggregate, groupBy } from './aggregate'
-export type { AggregatorFn, Aggregators } from './aggregate'
+// 複数集約・組み合わせユーティリティ
+export { aggregate, reduceBy } from './combine'
+export type { Reducers } from './combine'
 
 // カウントユーティリティ
-export { count } from './count'
-
+export { count } from './counting'

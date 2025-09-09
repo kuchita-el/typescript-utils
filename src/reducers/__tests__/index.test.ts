@@ -22,7 +22,7 @@ describe('reducers module exports', () => {
 
   it('should export all aggregate utilities', () => {
     expect(typeof reducers.aggregate).toBe('function')
-    expect(typeof reducers.groupBy).toBe('function')
+    expect(typeof reducers.reduceBy).toBe('function')
   })
 
   it('should export all count utilities', () => {
@@ -45,7 +45,7 @@ describe('reducers module exports', () => {
 
     // Count by role:action combination using groupBy + count
     const roleActionCounts = complexData.reduce(
-      reducers.groupBy(
+      reducers.reduceBy(
         item => `${item.user.role}:${item.action}`,
         reducers.count(),
         0
@@ -55,7 +55,7 @@ describe('reducers module exports', () => {
 
     // Sum values by role using groupBy + sum combination
     const roleValues = complexData.reduce(
-      reducers.groupBy(
+      reducers.reduceBy(
         item => item.user.role,
         reducers.sum((item: typeof complexData[number]) => item.value),
         0

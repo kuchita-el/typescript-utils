@@ -1,12 +1,12 @@
 /**
- * Tests for aggregation reducer utilities
+ * Tests for combination reducer utilities
  */
 import { describe, it, expect } from 'vitest'
 
 import { emptyMap } from '../../collections'
-import { aggregate, groupBy } from '../aggregate'
-import { count } from '../count'
-import { sum } from '../math'
+import { sum } from '../arithmetic'
+import { aggregate, reduceBy } from '../combine'
+import { count } from '../counting'
 
 describe('aggregate', () => {
   interface SampleData { id: number; name: string; category: string; value: number; }
@@ -75,7 +75,7 @@ describe('aggregate', () => {
   })
 })
 
-describe('groupBy', () => {
+describe('reduceBy', () => {
   const sampleData = [
     { id: 1, name: 'Alice', category: 'A', value: 100 },
     { id: 2, name: 'Bob', category: 'B', value: 200 },
@@ -83,7 +83,7 @@ describe('groupBy', () => {
   ]
 
   it('should group and aggregate by category', () => {
-    const result = sampleData.reduce(groupBy(
+    const result = sampleData.reduce(reduceBy(
       item => item.category,
       (acc: { total: number; count: number }, item: typeof sampleData[number]) => ({
         total: acc.total + item.value,
@@ -104,7 +104,7 @@ describe('groupBy', () => {
       { region: 'North', sales: 150, cost: 90 }
     ]
     
-    const result = sales.reduce(groupBy(
+    const result = sales.reduce(reduceBy(
       s => s.region,
       (acc: { totalSales: number; totalCost: number }, item: typeof sales[number]) => ({
         totalSales: acc.totalSales + item.sales,
@@ -124,7 +124,7 @@ describe('groupBy', () => {
       { category: 'A', value: 200 }
     ]
     
-    const result = data.reduce(groupBy(
+    const result = data.reduce(reduceBy(
       item => item.category,
       (acc: number, item: typeof data[number]) => acc + item.value,
       0
@@ -136,7 +136,7 @@ describe('groupBy', () => {
 
   it('should handle empty arrays', () => {
     const emptyArray: { category: string, value: number }[] = []
-    const result = emptyArray.reduce(groupBy(
+    const result = emptyArray.reduce(reduceBy(
       (item) => item.category,
       (acc: number, item) => acc + item.value,
       0
@@ -152,7 +152,7 @@ describe('groupBy', () => {
       { user: { id: 1, role: 'admin' }, action: 'delete', timestamp: 3000 },
     ]
     
-    const result = events.reduce(groupBy(
+    const result = events.reduce(reduceBy(
       item => `${item.user.role}:${item.action}`,
       (acc: number) => acc + 1,
       0
@@ -164,14 +164,14 @@ describe('groupBy', () => {
     expect(result.size).toBe(3)
   })
 
-  it('should work with groupBy + sum combination (replacing sumBy)', () => {
+  it('should work with reduceBy + sum combination (replacing sumBy)', () => {
     const sampleData = [
       { id: 1, category: 'A', value: 100 },
       { id: 2, category: 'B', value: 200 },
       { id: 3, category: 'A', value: 150 }
     ]
     
-    const result = sampleData.reduce(groupBy(
+    const result = sampleData.reduce(reduceBy(
       item => item.category,
       sum((item: typeof sampleData[number]) => item.value),
       0
@@ -182,13 +182,13 @@ describe('groupBy', () => {
     expect(result.size).toBe(2)
   })
 
-  it('should handle single category with groupBy + sum', () => {
+  it('should handle single category with reduceBy + sum', () => {
     const data = [
       { category: 'A', value: 100 },
       { category: 'A', value: 200 }
     ]
     
-    const result = data.reduce(groupBy(
+    const result = data.reduce(reduceBy(
       item => item.category,
       sum((item: typeof data[number]) => item.value),
       0
@@ -198,9 +198,9 @@ describe('groupBy', () => {
     expect(result.size).toBe(1)
   })
 
-  it('should handle empty arrays with groupBy + sum', () => {
+  it('should handle empty arrays with reduceBy + sum', () => {
     const emptyArray: { category: string, value: number }[] = []
-    const result = emptyArray.reduce(groupBy(
+    const result = emptyArray.reduce(reduceBy(
       item => item.category,
       sum((item: typeof emptyArray[number]) => item.value),
       0
@@ -209,7 +209,7 @@ describe('groupBy', () => {
     expect(result.size).toBe(0)
   })
 
-  it('should work with groupBy + count combination (replacing countBy)', () => {
+  it('should work with reduceBy + count combination (replacing countBy)', () => {
     const sampleData = [
       { id: 1, category: 'A' },
       { id: 2, category: 'B' },
@@ -217,7 +217,7 @@ describe('groupBy', () => {
       { id: 4, category: 'C' }
     ]
     
-    const result = sampleData.reduce(groupBy(
+    const result = sampleData.reduce(reduceBy(
       item => item.category,
       count(),
       0
@@ -229,7 +229,7 @@ describe('groupBy', () => {
     expect(result.size).toBe(3)
   })
 
-  it('should work with groupBy + min combination for values', () => {
+  it('should work with reduceBy + min combination for values', () => {
     const sampleData = [
       { id: 1, category: 'A', value: 100 },
       { id: 2, category: 'B', value: 200 },
@@ -238,7 +238,7 @@ describe('groupBy', () => {
     ]
     
     // Track minimum values by category
-    const result = sampleData.reduce(groupBy(
+    const result = sampleData.reduce(reduceBy(
       item => item.category,
       (acc: number, item: typeof sampleData[number]) => Math.min(acc, item.value),
       Infinity
@@ -249,7 +249,7 @@ describe('groupBy', () => {
     expect(result.size).toBe(2)
   })
 
-  it('should work with groupBy + max combination for values', () => {
+  it('should work with reduceBy + max combination for values', () => {
     const sampleData = [
       { id: 1, category: 'A', value: 100 },
       { id: 2, category: 'B', value: 200 },
@@ -258,7 +258,7 @@ describe('groupBy', () => {
     ]
     
     // Track maximum values by category
-    const result = sampleData.reduce(groupBy(
+    const result = sampleData.reduce(reduceBy(
       item => item.category,
       (acc: number, item: typeof sampleData[number]) => Math.max(acc, item.value),
       -Infinity
@@ -282,13 +282,13 @@ describe('groupBy', () => {
     ]
     
     // These should all work with proper type inference
-    const sumResult = testData.reduce(groupBy(
+    const sumResult = testData.reduce(reduceBy(
       item => item.category,
       sum((item: TestData) => item.value),
       0
     ), emptyMap())
     
-    const countResult = testData.reduce(groupBy(
+    const countResult = testData.reduce(reduceBy(
       item => item.category,
       count<TestData>(),
       0

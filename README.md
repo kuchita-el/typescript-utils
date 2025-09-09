@@ -22,7 +22,7 @@ npm install typescript-utils
 ```typescript
 import {
   sum,
-  groupBy,
+  reduceBy,
   toMap,
   emptyMap,
   aggregate,
@@ -40,7 +40,7 @@ const items = [
   { category: 'A', value: 15 }
 ]
 const categoryTotals = items.reduce(
-  groupBy(
+  reduceBy(
     (item) => item.category,
     sum((item) => item.value),
     0
@@ -84,7 +84,7 @@ const userRecord = users.reduce(
 ### 高度な集約
 
 ```typescript
-import { aggregate, groupBy, count, emptyMap } from 'typescript-utils'
+import { aggregate, reduceBy, count, sum, emptyMap } from 'typescript-utils'
 
 const data = [
   { category: 'A', value: 10, status: 'active' },
@@ -92,12 +92,12 @@ const data = [
   { category: 'B', value: 15, status: 'active' }
 ]
 
-// 複雑な統計情報の集約
+// 複雑な統計情報の集約（パフォーマンス重視: 1回のスキャンで複数計算）
 const stats = data.reduce(
   aggregate({
-    total: (acc, item) => acc + item.value,
-    count: (acc, _item) => acc + 1,
-    average: null // 後で計算
+    total: sum((item) => item.value),
+    count: count(),
+    average: 0 // 後で計算
   }),
   { total: 0, count: 0, average: 0 }
 )
@@ -108,14 +108,14 @@ stats.average = stats.total / stats.count
 // カテゴリ別のグループ化（要素を配列にまとめる場合は別の関数が必要）
 // ここでは代わりにカテゴリ別カウントの例を示す
 const categoryCounts = data.reduce(
-  groupBy((item) => item.category, count(), 0),
+  reduceBy((item) => item.category, count(), 0),
   emptyMap()
 )
 // => Map<string, number> { 'A' => 2, 'B' => 1 }
 
 // ステータス別のカウント
 const statusCounts = data.reduce(
-  groupBy((item) => item.status, count(), 0),
+  reduceBy((item) => item.status, count(), 0),
   emptyMap()
 )
 // => Map<string, number> { 'active' => 2, 'inactive' => 1 }
@@ -140,7 +140,7 @@ const statusCounts = data.reduce(
 #### 集約
 
 - `aggregate(aggregators)` - 複数の集約を同時実行
-- `groupBy(keyFn, aggregatorFn, initialValue)` - 要素をキー別にグループ化して集約
+- `reduceBy(keyFn, reducerFn, initialValue)` - 要素をキー別にグループ化して集約
 
 ### コレクションヘルパー
 
@@ -212,11 +212,11 @@ src/
 ├── collections.ts        # コレクションヘルパー
 └── reducers/            # Array.reduce()ユーティリティ
     ├── index.ts         # リデューサーエクスポート
-    ├── math.ts          # 数学演算
+    ├── arithmetic.ts    # 数学演算
     ├── map.ts           # Map変換
     ├── record.ts        # Record変換
-    ├── aggregate.ts     # 集約関数
-    ├── count.ts         # カウント関数
+    ├── combine.ts       # 集約関数
+    ├── counting.ts      # カウント関数
     └── __tests__/       # テストファイル
 ```
 
@@ -234,7 +234,7 @@ const counts: Map<string, number> = items.reduce((acc, item) => {
 
 // ✅ 型注釈不要のライブラリ使用
 const counts = items.reduce(
-  groupBy((item) => item.category, count(), 0),
+  reduceBy((item) => item.category, count(), 0),
   emptyMap()
 )
 //    ^? Map<string, number> - 自動推論！

@@ -1,9 +1,9 @@
 /**
- * Tests for mathematical reducer utilities
+ * Tests for arithmetic reducer utilities
  */
 import { describe, it, expect } from 'vitest'
 
-import { sum, min, max } from '../math'
+import { sum, min, max } from '../arithmetic'
 
 describe('sum', () => {
   it('should sum primitive numbers', () => {
